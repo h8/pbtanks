@@ -258,7 +258,6 @@ void gmanager_draw(GManager *m)
     Tank *t = NULL;
     Ballistics *b = NULL;
 
-    // FIXME: fullupdate here after stat screen
     ClearScreen();
 
     landscape_draw(m->landscape, LAND_COLOR);
