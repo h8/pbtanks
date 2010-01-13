@@ -1,6 +1,6 @@
 /************************************************************************/
 /* PBTanks                                                              */
-/* URLs: http://code.google.com/p/pbtanks                              */
+/* URLs: http://code.google.com/p/pbtanks                               */
 /* Copyright (C) 2010, Dmitry Stropaloff <dmitry.stropaloff@gmail.com>  */
 /*                                                                      */
 /* This program is free software; you can redistribute it and/or modify */
@@ -55,9 +55,9 @@ void draw_help()
     const char *back_key_buf = _("Exit or return");
     const char *ok_key_buf = _("Fire, select and change");
     const char *clean_key_buf = _("Clear game screen from tracing paths");
-    const char *arrows_key_buf = _("Select, change, adjust power (up and "
-                                "down) and angle (left and right) "
-                                "in the game.");
+    const char *arrows_key_buf = _("Select, change, adjust power (up/"
+                                "down) and angle (left/right) in the "
+                                "game (long pressing for quick adjusting).");
 
     SetFont(f_body, BLACK);
 

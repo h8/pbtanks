@@ -1,6 +1,6 @@
 /************************************************************************/
 /* PBTanks                                                              */
-/* URLs: http://code.google.com/p/pbtanks                              */
+/* URLs: http://code.google.com/p/pbtanks                               */
 /* Copyright (C) 2010, Dmitry Stropaloff <dmitry.stropaloff@gmail.com>  */
 /*                                                                      */
 /* This program is free software; you can redistribute it and/or modify */
@@ -48,7 +48,7 @@ extern const ibitmap main_background;
 
 #define MAX_PLAYERS 6
 
-#define LANG_C 2
+#define LANG_C 3
 #define LANG_M LANG_C - 1
 
 #define HDIFF_C 4
@@ -70,7 +70,7 @@ int hdiff;
 int cliff;
 
 int lang_index;
-static const char *lang[LANG_C] = {"en", "ru"};
+static const char *lang[LANG_C] = {"en", "ru", "ua"};
 char *cfg_path;
 
 static iconfigedit cfg[] =
