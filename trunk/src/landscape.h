@@ -1,6 +1,6 @@
 /************************************************************************/
 /* PBTanks                                                              */
-/* URLs: http://code.google.com/p/pbtanks                              */
+/* URLs: http://code.google.com/p/pbtanks                               */
 /* Copyright (C) 2010, Dmitry Stropaloff <dmitry.stropaloff@gmail.com>  */
 /*                                                                      */
 /* This program is free software; you can redistribute it and/or modify */
