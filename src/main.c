@@ -330,7 +330,7 @@ int get_book_model()
 
     if (strstr(s, "301"))
         mod = 301;
-    if (strstr(s, "360"))
+    if (strstr(s, "101"))
         mod = 360;
 
     return mod;

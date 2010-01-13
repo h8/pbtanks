@@ -76,6 +76,11 @@ int round_handler(int type, int key, int rtime)
 {
     if (type == EVT_SHOW)
     {
+    	// once at start to clean bakground
+        ClearScreen();
+        FullUpdate();
+        FineUpdate();
+    	
         m = gmanager_new();
         gmanager_set_ginit_data(m, glob_idata);
         gmanager_prepare_game(m);

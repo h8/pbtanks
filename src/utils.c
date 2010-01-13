@@ -44,9 +44,7 @@ Size * size_new(int width, int height)
 
 void init_rnd()
 {
-    time_t t;
-    time(&t);
-    srand(t);
+    srand(time(NULL));
 }
 
 int rnd(int limit)
