@@ -26,6 +26,8 @@
 #define GFONT "LiberationSans"
 #define GFONTB "LiberationSans-Bold"
 
+#define SAVENAME "pbtanks.save"
+
 /* global vars */
 ushort glob_book_model;
 char glob_back_key;

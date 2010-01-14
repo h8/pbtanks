@@ -44,7 +44,8 @@ extern const ibitmap main_background;
 #define MENU_CLIFF 6
 #define MENU_LANG 7
 #define MENU_HELP 8
-#define MENU_START 9
+#define MENU_LOADGAME 9
+#define MENU_START 10
 
 #define MAX_PLAYERS 10
 #define MAX_ROUNDS 20
@@ -95,6 +96,7 @@ int get_book_model();
 void load_config();
 void save_config();
 void set_hotkeys();
+int load_saved_game();
 
 int main_handler(int type, int key, int rtime)
 {
@@ -127,6 +129,10 @@ int main_handler(int type, int key, int rtime)
             {
             case MENU_CHANWIND:
                 chanwind = chanwind == 1? 0 : 1;
+                break;
+            case MENU_LOADGAME:
+                if (load_saved_game())
+                    SetEventHandler(game_handler);
                 break;
             case MENU_START:
                 create_idata();
@@ -251,14 +257,15 @@ void draw_main_screen()
     const Size screen = {ScreenWidth(), ScreenHeight()};
 
     irect players_rect = {side_offset, 50, items_width, 30, MENU_PLAYERS};
-    irect rounds_rect = {side_offset, 100, items_width, 30, MENU_ROUNDS};
-    irect windm_rect = {side_offset, 150, items_width, 30, MENU_MAXWIND};
-    irect windc_rect = {side_offset, 200, items_width, 30, MENU_CHANWIND};
-    irect tmark_rect = {side_offset, 250, items_width, 30, MENU_TMARKER};
-    irect hdiff_rect = {side_offset, 300, items_width, 30, MENU_HDIFF};
-    irect cliff_rect = {side_offset, 350, items_width, 30, MENU_CLIFF};
-    irect lang_rect = {side_offset, 400, items_width, 30, MENU_LANG};
-    irect help_rect = {side_offset, 450, items_width, 30, MENU_HELP};
+    irect rounds_rect = {side_offset, 95, items_width, 30, MENU_ROUNDS};
+    irect windm_rect = {side_offset, 140, items_width, 30, MENU_MAXWIND};
+    irect windc_rect = {side_offset, 185, items_width, 30, MENU_CHANWIND};
+    irect tmark_rect = {side_offset, 230, items_width, 30, MENU_TMARKER};
+    irect hdiff_rect = {side_offset, 275, items_width, 30, MENU_HDIFF};
+    irect cliff_rect = {side_offset, 320, items_width, 30, MENU_CLIFF};
+    irect lang_rect = {side_offset, 365, items_width, 30, MENU_LANG};
+    irect help_rect = {side_offset, 410, items_width, 30, MENU_HELP};
+    irect load_rect = {side_offset, 455, items_width, 30, MENU_LOADGAME};
     irect start_rect = {side_offset, 500, items_width, 30, MENU_START};
 
     const char *hdiff_sr[HDIFF_C] = {_("Min"), _("Normal"),
@@ -305,6 +312,8 @@ void draw_main_screen()
                     VALIGN_MIDDLE, active_item);
 
     draw_menu_rect(&help_rect, f, _("Help"), VALIGN_MIDDLE, active_item);
+
+    draw_menu_rect(&load_rect, f, _("Load game"), VALIGN_MIDDLE, active_item);
 
     draw_menu_rect(&start_rect, f, _("Start!"), VALIGN_MIDDLE, active_item);
 
@@ -381,6 +390,50 @@ void save_config()
     CloseConfig(c);
 
     free(cfg_path);
+}
+
+int load_saved_game()
+{
+    int index;
+    size_t dr;
+    FILE *f = NULL;
+    GInitData *gid = NULL;
+    int path_len = strlen(CONFIGPATH) + strlen(SAVENAME) + strlen("/") + 1;
+    char *save_path = calloc(path_len, sizeof(char));
+
+    snprintf(save_path, path_len, "%s/%s", CONFIGPATH, SAVENAME);
+
+    f = fopen(save_path, "rb");
+    if (f != NULL)
+    {
+        gid = malloc(sizeof(GInitData));
+        dr = fread(gid, sizeof(GInitData), 1, f);
+
+        if (dr)
+        {
+            gid->tdesc = calloc(gid->tcount, sizeof(TankDesc));
+
+            for (index = 0; index < gid->tcount; index++)
+            {
+                dr = fread(&gid->tdesc[index], sizeof(TankDesc), 1, f);
+                if (!dr)  // if error reading file
+                {
+                    free(gid->tdesc);
+                    free(gid);
+                    gid = NULL;
+                    break;
+                }
+            }
+        }
+
+        fclose(f);
+    }
+
+    free(save_path);
+
+    glob_idata = gid;
+
+    return gid != NULL? 1 : 0;
 }
 
 int main(int argc, char **argv)
