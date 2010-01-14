@@ -22,6 +22,8 @@
 #include "tank.h"
 #include "landscape.h"
 
+#define MIN_LAND_HEIGHT 40
+
 /* internal functions */
 int line_calc_y(Point *ps, Point *pe, int x);
 int ellipse_calc_y(Point *ps, Point *pe, int x, int type);
@@ -112,6 +114,9 @@ void landscape_generate(Landscape *l, LandProps *props)
     int index;
 
     /* init land with random peaks height */
+    if (height_range_min < MIN_LAND_HEIGHT)
+    	height_range_min = MIN_LAND_HEIGHT;
+    
     init_rnd();
     for (index = 0; index < l->size->width; index++)
         landscape_set_point(l, index,
