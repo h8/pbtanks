@@ -21,7 +21,7 @@
 #include "inkview.h"
 
 /* languages */
-#define MSG_COUNT 52
+#define MSG_COUNT 54
 
 static const char *msg_en[MSG_COUNT] =
 {
@@ -41,6 +41,7 @@ static const char *msg_en[MSG_COUNT] =
     "Cliffness: %s",
     "Language: English",
     "Help",
+    "Load game",
     "Start!",
     "Up/Down - select, Left/Right - change,\n"
         "Ok - accept, Back to exit.",
@@ -70,6 +71,7 @@ static const char *msg_en[MSG_COUNT] =
     /* game screen */
     "Confirmation",
     "\nAre you shure, you want to exit?",
+    "\nAre you shure, you want to exit (game will be saved)?",
     "Yes",
     "No",
     "Name",
@@ -109,6 +111,7 @@ static const char *msg_ru[MSG_COUNT] =
     "Скалистость: %s",
     "Язык: Русский",
     "Помощь",
+    "Загрузить игру",
     "Старт!",
     "Вверх/Вниз - выбор, Вправо/Влево - изменить,\n"
         "Ok - принять, Назад - выход.",
@@ -137,6 +140,7 @@ static const char *msg_ru[MSG_COUNT] =
     /* game screen */
     "Подтверждение",
     "\nВы уверены, что хотите выйти?",
+    "\nВы уверены, что хотите выйти (игра будет сохранена)?",
     "Да",
     "Нет",
     "Имя",
@@ -176,6 +180,7 @@ static const char *msg_ua[MSG_COUNT] =
     "Скелястість: %s",
     "Мова: Українська",
     "Допомога",
+    "Завантажити гру",
     "Старт!",
     "Уверх/Вниз - вибір, Вправо/Вліво - змінити,\n"
         "Ok - прийняти, Назад - вихід.",
@@ -204,6 +209,7 @@ static const char *msg_ua[MSG_COUNT] =
     /* game screen */
     "Підтвердження",
     "\nВи впевнені, що хочете вийти?",
+    "\nВи впевнені, що хочете вийти (гру буде збережено)?",
     "Так",
     "Ні",
     "Ім'я",

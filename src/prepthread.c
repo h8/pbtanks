@@ -244,6 +244,6 @@ void keyboard_entry(char *s)
         strncpy(tname, s, T_NAME_LEN - 1);
     else
         strncpy(tname, tinitname, T_NAME_LEN - 1);
-    tname[T_NAME_LEN] = '\000';
+    tname[T_NAME_LEN] = '\0';
     draw_tank_dialog();
 }

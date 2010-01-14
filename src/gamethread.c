@@ -56,9 +56,9 @@ int game_handler(int type, int key, int rtime)
 
     if (type == EVT_KEYPRESS)
     {
-        if (key == glob_back_key)
+        if (key == glob_back_key && glob_idata->rounds > glob_idata->cround)
             Dialog(ICON_QUESTION, (char *)_("Confirmation"),
-                   (char *)_("\nAre you shure, you want to exit?"),
+                   (char *)_("\nAre you shure, you want to exit (game will be saved)?"),
                    (char *)_("Yes"), (char *)_("No"), game_dialog_handler);
         else if (key == KEY_OK)
         {
@@ -80,7 +80,7 @@ int round_handler(int type, int key, int rtime)
         ClearScreen();
         FullUpdate();
         FineUpdate();
-    	
+
         m = gmanager_new();
         gmanager_set_ginit_data(m, glob_idata);
         gmanager_prepare_game(m);
@@ -161,7 +161,34 @@ void round_dialog_handler(int button)
 void game_dialog_handler(int button)
 {
     if (button == 1)
+    {
+        // save state
+        int index;
+        FILE *f = NULL;
+        TankDesc *td = NULL;
+        int path_len = strlen(CONFIGPATH) + strlen(SAVENAME) + strlen("/") + 1;
+        char *save_path = calloc(path_len, sizeof(char));
+
+        snprintf(save_path, path_len, "%s/%s", CONFIGPATH, SAVENAME);
+
+        f = fopen(save_path, "wb");
+        if (f != NULL)
+        {
+            fwrite(glob_idata, sizeof(GInitData), 1, f);
+
+            for (index = 0; index < glob_idata->tcount; index++)
+            {
+                td = &glob_idata->tdesc[index];
+                fwrite(td, sizeof(TankDesc), 1, f);
+            }
+
+            fclose(f);
+        }
+
+        free(save_path);
+
         main_handler_ret();
+    }
 }
 
 void game_handler_draw_stats()
