@@ -46,7 +46,8 @@ extern const ibitmap main_background;
 #define MENU_HELP 8
 #define MENU_START 9
 
-#define MAX_PLAYERS 6
+#define MAX_PLAYERS 10
+#define MAX_ROUNDS 20
 
 #define LANG_C 3
 #define LANG_M LANG_C - 1
@@ -154,7 +155,7 @@ int main_handler(int type, int key, int rtime)
                 players = players > 2? players - 1 : MAX_PLAYERS;
                 break;
             case MENU_ROUNDS:
-                rounds = rounds > 2? rounds - 1 : 20;
+                rounds = rounds > 2? rounds - 1 : MAX_ROUNDS;
                 break;
             case MENU_MAXWIND:
                 maxwind = maxwind > 0? maxwind - 1 : 10;
@@ -184,7 +185,7 @@ int main_handler(int type, int key, int rtime)
                 players = players < MAX_PLAYERS? players + 1 : 2;
                 break;
             case MENU_ROUNDS:
-                rounds = rounds < 20? rounds + 1 : 2;
+                rounds = rounds < MAX_ROUNDS? rounds + 1 : 2;
                 break;
             case MENU_MAXWIND:
                 maxwind = maxwind < 10? maxwind + 1 : 0;

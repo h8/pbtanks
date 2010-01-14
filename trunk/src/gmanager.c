@@ -30,6 +30,8 @@ extern const ibitmap battery, angle,
 #define EXPL_R 20
 #define STAT_PANEL_OFFSET 10
 
+#define GFONTM "LiberationSans"
+
 /* internal functions */
 int get_next_tank(GManager *m);
 int check_human_players(GManager *m);
@@ -395,14 +397,63 @@ void draw_fluger(GManager *m)
 
 void draw_tank_marker(GManager *m)
 {
+	ifont *f;
+	char id;
+	int name_width;
+	int text_x;
+	int text_y;
+	int text_x_l = m->landscape->size->width;
+	const int text_y_up = m->landscape->size->height - 32;
+	const int text_y_down = m->landscape->size->height - 18;
+	int text_y_l = text_y_up;
     Tank *t = tqueue_get(m->tqueue, m->ctid);
 
     if (t != NULL && m->ginitdata->tmarker)
+    {
+    	id = t->id;
         DrawLine(t->pos.x,
                     m->landscape->size->height - t->pos.y + 5,
                     t->pos.x,
-                    m->landscape->size->height - 5,
+                    m->landscape->size->height,
                     BLACK);
+        
+        f = OpenFont(GFONTM, 12, 1);
+        
+        SetFont(f, BLACK);
+        
+        tqueue_iter_to_head(m->tqueue);
+        t = tqueue_iter_next(m->tqueue);
+        
+        while (t != NULL)
+        {
+        	if (id != t->id)
+        	{
+				name_width = StringWidth(t->name);
+				text_x = t->pos.x - name_width / 2;
+				
+				if ((name_width / 2) + t->pos.x >= m->landscape->size->width)
+					text_x = m->landscape->size->width - name_width - 2;
+				if (text_x < 0)
+					text_x = 2;
+				
+				if (text_x + name_width > text_x_l && text_y_l != text_y_up)
+					text_y = text_y_up;
+				else
+					text_y = text_y_down;
+				
+				if (t->pos.y < 40)
+					text_y = text_y - m->landscape->size->height + 60;
+				
+				DrawString(text_x, text_y, t->name);
+				
+				text_x_l = text_x;
+				text_y_l = text_y;
+        	}
+            t = tqueue_iter_next(m->tqueue);
+        }
+        
+        CloseFont(f);
+    }
 }
 
 void generate_wind(GManager *m)
