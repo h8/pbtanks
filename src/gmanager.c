@@ -29,13 +29,16 @@ extern const ibitmap battery, angle,
 #define LAND_COLOR 5 * 0x111111
 #define EXPL_R 20
 #define STAT_PANEL_OFFSET 10
+#define LABELS_PANEL_HEIGHT 30
 
 #define GFONTM "LiberationSans"
+#define GFONTMB "LiberationSans-Bold"
 
 /* internal functions */
 int get_next_tank(GManager *m);
 int check_human_players(GManager *m);
 void draw_stat_panel(GManager *m);
+void draw_labels_panel(GManager *m);
 void draw_fluger(GManager *m);
 void draw_tank_marker(GManager *m);
 void generate_wind(GManager *m);
@@ -105,7 +108,8 @@ void gmanager_prepare_game(GManager *m)
         tqueue_add(m->tqueue, t);
     }
 
-    m->ctid = -1;
+    init_rnd();
+    m->ctid = rnd_range(0, m->ginitdata->tcount + 1) - 2;  // from -1 (id == 0)
     m->ginitdata->cround++;
 }
 
@@ -227,7 +231,9 @@ void gmanager_do_turn(GManager *m)
         t = tqueue_iter_next(m->tqueue);
         while (t != NULL)
         {
-            landscape_dig_tank_pad(m->landscape, &t->pos);
+            landscape_dig_tank_pad(m->landscape, &t->pos);  // falling
+            if (m->ginitdata->tmarker && t->pos.x < LABELS_PANEL_HEIGHT)
+            	t->pos.x = LABELS_PANEL_HEIGHT + T_HEIGHT2 + 3;
             t = tqueue_iter_next(m->tqueue);
         }
     }
@@ -284,6 +290,7 @@ void gmanager_draw(GManager *m)
     draw_stat_panel(m);
     draw_fluger(m);
     draw_tank_marker(m);
+    draw_labels_panel(m);
     DrawRect(0, 0,
                 m->landscape->size->width,
                 m->landscape->size->height,
@@ -397,63 +404,62 @@ void draw_fluger(GManager *m)
 
 void draw_tank_marker(GManager *m)
 {
-	ifont *f;
-	char id;
-	int name_width;
-	int text_x;
-	int text_y;
-	int text_x_l = m->landscape->size->width;
-	const int text_y_up = m->landscape->size->height - 32;
-	const int text_y_down = m->landscape->size->height - 18;
-	int text_y_l = text_y_up;
     Tank *t = tqueue_get(m->tqueue, m->ctid);
 
     if (t != NULL && m->ginitdata->tmarker)
     {
-    	id = t->id;
         DrawLine(t->pos.x,
                     m->landscape->size->height - t->pos.y + 5,
                     t->pos.x,
                     m->landscape->size->height,
                     BLACK);
-        
-        f = OpenFont(GFONTM, 12, 1);
-        
-        SetFont(f, BLACK);
-        
-        tqueue_iter_to_head(m->tqueue);
-        t = tqueue_iter_next(m->tqueue);
-        
-        while (t != NULL)
-        {
-        	if (id != t->id)
-        	{
-				name_width = StringWidth(t->name);
-				text_x = t->pos.x - name_width / 2;
-				
-				if ((name_width / 2) + t->pos.x >= m->landscape->size->width)
-					text_x = m->landscape->size->width - name_width - 2;
-				if (text_x < 0)
-					text_x = 2;
-				
-				if (text_x + name_width > text_x_l && text_y_l != text_y_up)
-					text_y = text_y_up;
-				else
-					text_y = text_y_down;
-				
-				if (t->pos.y < 40)
-					text_y = text_y - m->landscape->size->height + 60;
-				
-				DrawString(text_x, text_y, t->name);
-				
-				text_x_l = text_x;
-				text_y_l = text_y;
-        	}
-            t = tqueue_iter_next(m->tqueue);
-        }
-        
-        CloseFont(f);
     }
+}
+
+void draw_labels_panel(GManager *m)
+{
+	if (!m->ginitdata->tmarker)
+		return;
+	
+	FillArea(0, m->landscape->size->height - LABELS_PANEL_HEIGHT,
+				m->landscape->size->width, LABELS_PANEL_HEIGHT, 
+				WHITE);
+	DrawRect(0, m->landscape->size->height - LABELS_PANEL_HEIGHT,
+				m->landscape->size->width, LABELS_PANEL_HEIGHT, 
+				BLACK);
+	
+	int name_width;
+	int pos_x;
+	int pos_dy;
+	Tank *t = tqueue_get(m->tqueue, m->ctid);
+	char id = t->id;
+	
+	ifont *f_reg = OpenFont(GFONTM, 10, 1);
+	ifont *f_bold = OpenFont(GFONTMB, 10, 1);
+	
+	tqueue_iter_to_head(m->tqueue);
+    t = tqueue_iter_next(m->tqueue);
+    
+    while (t != NULL) 
+    { 
+    	if (id != t->id)
+    		SetFont(f_reg, DGRAY);
+    	else
+    		SetFont(f_bold, BLACK);
+
+		name_width = StringWidth(t->name) / 2;
+		pos_x = t->pos.x - name_width;
+		pos_dy = t->id % 2? 1 : 15;
+		DrawString(pos_x, 
+					m->landscape->size->height - LABELS_PANEL_HEIGHT
+						+ pos_dy, 
+					t->name);
+ 
+    	t = tqueue_iter_next(m->tqueue);
+    }
+	
+	CloseFont(f_reg);
+	CloseFont(f_bold);
 }
 
 void generate_wind(GManager *m)
