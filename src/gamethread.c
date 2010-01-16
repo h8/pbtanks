@@ -315,8 +315,8 @@ void game_over_handler_draw()
     gmanager_draw(m);
     ifont *f = OpenFont(GFONTB, 16, 1);
 
-    SetFont(f, WHITE);
-    DrawTextRect(0, ScreenHeight() - 50, ScreenWidth(), 50,
+    SetFont(f, BLACK);
+    DrawTextRect(0, 50, ScreenWidth(), 50,
                  (char *)_("Press any key to continue ..."),
                  ALIGN_CENTER | VALIGN_MIDDLE);
 
